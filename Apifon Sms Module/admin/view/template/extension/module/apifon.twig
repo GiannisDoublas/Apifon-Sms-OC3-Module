@@ -1,0 +1,408 @@
+{{ header }}
+<style>
+
+
+    #radioBtn .notActive{
+        color: #833d75;
+        background-color: #fff;
+    }
+     #radioBtn .notActive:hover{
+        color: #833d75;
+        background-color: #fff;
+    }
+    .error{
+        color: red!important;
+    }
+    .homepage-grid-icon{
+        width: 100px;
+        margin: 10px;
+    }
+    .text-apifon{
+        color: #833d75;
+        font-weight: bold;
+    }
+    .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle{
+        background-color: #833d75;
+        border-color: #833d75;
+    }
+    .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle:hover{
+        background-color: #833d75;
+        border-color: #833d75;
+    }
+    .btn-primary {
+        background-color: #833d75;
+        border-color: #833d75;
+    }
+    .btn-primary:hover {
+        background-color: #833d75;
+        border-color: #833d75;
+    }
+    .btn-primary.active:hover{
+        background-color: #833d75;
+        border-color: #833d75;
+    }
+</style>
+<script type="text/javascript" src="view/javascript/jquery.validate.min.js"></script>
+{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <h1 class="text-apifon"><img class="homepage-grid-icon" src="view/image/apifon.png">SMS SENDER</h1>
+            <div class="pull-right">
+                <ul class="breadcrumb">
+                    {% for breadcrumb in breadcrumbs %}
+                        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                    {% endfor %}
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    <div class="container-fluid">
+        {% if error_warning %}
+            <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        {% if success %}
+            <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+            </div>
+
+
+            <div class="panel-body">
+
+                <ul class="nav nav-tabs">
+                    <li  class="active"><a href="#tab-notification" data-toggle="tab">{{ tab_notification }}</a></li>
+                    <li><a href="#tab-custom" data-toggle="tab">{{ tab_send_custom }}</a></li>
+                </ul>
+                <div class="tab-content">
+                    
+                        <div class=" active tab-pane  table-responsive" id="tab-notification">
+                            <div class="panel panel-default panel-floating panel-floating-inline">
+                                <div class="panel-body">
+                                    <form method="post" action="javascript:void(0)" id="formNotify" class="form-horizontal">
+                                        <div class="col-sm-12">
+
+                                            <h4 class="text-center">Keywords : <span class="text-apifon">[USER_NAME] , [ORDER_ID] , [AMOUNT] , [VOUCHER]</h4>
+
+                                        </div>
+                                       
+                                        <div class="col-sm-12">
+                                            <div class="form-group row">
+                                                <label class="col-sm-12 col-md-2 control-label ">Send SMS on Shipped:</label>
+                                                <div class="col-sm-12 col-md-2">
+                                                    <div class="input-group">
+                                                        <div id="radioBtn" class="btn-group">
+                                                            <a class="btn btn-primary btn-sm {% if settings.shipped.status==0 %} active  {% else %} notActive {% endif %}" id="shipped_yes" data-toggle="send_sms_shipped" data-title="0">YES</a>
+                                                            <a class="btn btn-primary btn-sm {% if settings.shipped.status==1 %} active  {% else %} notActive {% endif %}" id="shipped_no" data-toggle="send_sms_shipped" data-title="1">NO</a>
+                                                        </div>
+                                                        <input type="hidden" name="send_sms_shipped" id="send_sms_shipped" value="{% if settings.shipped.status %} {{ settings.shipped.status }} {% else %} 0 {% endif %}">
+                                                    </div>
+                                                </div>
+
+                                                <label class="col-sm-12 col-md-2 control-label" for="pending_msg">Shipped Massage :</label>
+                                                <div class="col-sm-12 col-md-5">
+
+                                                    <textarea name="shipped_msg" class="form-control" rows="3" id="shipped_msg" placeholder="Shipped Massage " required {% if settings.shipped.status==1 %}readonly="readonly"{% endif %} >{% if settings.shipped.message %}{{ settings.shipped.message }} {% endif %}</textarea>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group row">
+                                                <label class="col-sm-12 col-md-2 control-label ">Send SMS on Pending:</label>
+                                                <div class="col-sm-12 col-md-2">
+                                                    <div class="input-group">
+                                                        <div id="radioBtn" class="btn-group">
+                                                            <a class="btn btn-primary btn-sm {% if settings.pending.status==0 %} active  {% else %} notActive {% endif %}" id="pending_yes" data-toggle="send_sms_pending" data-title="0">YES</a>
+                                                            <a class="btn btn-primary btn-sm {% if settings.pending.status==1 %} active  {% else %} notActive {% endif %}" id="pending_no" data-toggle="send_sms_pending" data-title="1">NO</a>
+                                                        </div>
+                                                        <input type="hidden" name="send_sms_pending" id="send_sms_pending" value="{% if settings.pending.status %} {{ settings.pending.status }} {% else %} 0 {% endif %}">
+                                                    </div>
+                                                </div>
+
+                                                <label class="col-sm-12 col-md-2 control-label" for="pending_msg">Pending Massage :</label>
+                                                <div class="col-sm-12 col-md-5">
+
+                                                    <textarea name="pending_msg" class="form-control" rows="3" id="pending_msg" placeholder="Pending Massage " required {% if settings.pending.status==1 %}readonly="readonly"{% endif %} >{% if settings.pending.message %}{{ settings.pending.message }} {% endif %}</textarea>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group row">
+                                                <label class="col-sm-12 col-md-2 control-label ">Send SMS on Processing:</label>
+                                                <div class="col-sm-12 col-md-2">
+                                                    <div class="input-group">
+                                                        <div id="radioBtn" class="btn-group">
+                                                            <a class="btn btn-primary btn-sm {% if settings.processing.status==0 %} active  {% else %} notActive {% endif %}" id="processing_yes" data-toggle="send_sms_processing" data-title="0">YES</a>
+                                                            <a class="btn btn-primary btn-sm {% if settings.processing.status==1 %} active  {% else %} notActive {% endif %}" id="processing_no"  data-toggle="send_sms_processing" data-title="1">NO</a>
+                                                        </div>
+                                                        <input type="hidden" name="send_sms_processing" id="send_sms_processing" value="{% if settings.processing.status %} {{ settings.processing.status }} {% else %} 0 {% endif %}">
+                                                    </div>
+                                                </div>
+                                                <label class="col-sm-12 col-md-2 control-label" for="processing_msg">Processing Massage :</label>
+                                                <div class="col-sm-12 col-md-5">
+
+                                                    <textarea name="processing_msg" class="form-control" rows="3" id="processing_msg" placeholder="Processing Massage " required {% if settings.processing.status==1 %}readonly="readonly"{% endif %} >{% if settings.processing.message %}{{ settings.processing.message }} {% endif %}</textarea>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+
+                                            <div class="form-group row">
+                                                <label class="col-sm-12 col-md-2 control-label ">Send SMS on Failed:</label>
+                                                <div class="col-sm-12 col-md-2">
+                                                    <div class="input-group">
+                                                        <div id="radioBtn" class="btn-group">
+                                                            <a class="btn btn-primary btn-sm {% if settings.failed.status==0 %} active  {% else %} notActive {% endif %}"  id="failed_yes" data-toggle="send_sms_failed" data-title="0">YES</a>
+                                                            <a class="btn btn-primary btn-sm {% if settings.failed.status==1 %} active  {% else %} notActive {% endif %}"
+                                                               id="failed_no" data-toggle="send_sms_failed" data-title="1">NO</a>
+                                                        </div>
+                                                        <input type="hidden" name="send_sms_failed" id="send_sms_failed" value="{% if settings.failed.status %} {{ settings.failed.status }} {% else %} 0 {% endif %}">
+                                                    </div>
+                                                </div>
+                                                <label class="col-sm-12 col-md-2 control-label" for="failed_msg">Failed Massage :</label>
+                                                <div class="col-sm-12 col-md-5">
+
+                                                    <textarea name="failed_msg" class="form-control" rows="3" id="failed_msg" placeholder="Failed Massage " required {% if settings.failed.status==1 %}readonly="readonly"{% endif %} >{% if settings.failed.message %}{{ settings.failed.message }} {% endif %}</textarea>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group row">
+                                                <label class="col-sm-12 col-md-2 control-label ">Send SMS on complete:</label>
+                                                <div class="col-sm-12 col-md-2">
+                                                    <div class="input-group">
+                                                        <div id="radioBtn" class="btn-group">
+                                                            <a class="btn btn-primary btn-sm {% if settings.complete.status==0 %} active  {% else %} notActive {% endif %}" id="complete_yes" data-toggle="send_sms_complete" data-title="0">YES</a>
+                                                            <a class="btn btn-primary btn-sm {% if settings.complete.status==1 %} active  {% else %} notActive {% endif %}" id="complete_no" data-toggle="send_sms_complete" data-title="1">NO</a>
+                                                        </div>
+                                                        <input type="hidden" name="send_sms_complete" id="send_sms_complete" value="{% if settings.complete.status %} {{ settings.complete.status }} {% else %} 0 {% endif %}">
+                                                    </div>
+                                                </div>
+
+                                                <label class="col-sm-12 col-md-2 control-label" for="complete_msg">complete Massage :</label>
+                                                <div class="col-sm-12 col-md-5">
+
+                                                    <textarea name="complete_msg" class="form-control" rows="3" id="complete_msg" placeholder="Complete Massage " required {% if settings.complete.status==1 %}readonly="readonly"{% endif %} >{% if settings.complete.message %}{{ settings.complete.message }} {% endif %}</textarea>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group row">
+                                                <label class="col-sm-12 col-md-2 control-label ">Send SMS on Cancelled:</label>
+                                                <div class="col-sm-12 col-md-2">
+                                                    <div class="input-group">
+                                                        <div id="radioBtn" class="btn-group">
+                                                            <a class="btn btn-primary btn-sm {% if settings.cancelled.status==0 %} active  {% else %} notActive {% endif %}" id="cancelled_yes" data-toggle="send_sms_cancelled" data-title="0">YES</a>
+                                                            <a class="btn btn-primary btn-sm {% if settings.cancelled.status==1 %} active  {% else %} notActive {% endif %}" id="cancelled_no" data-toggle="send_sms_cancelled" data-title="1">NO</a>
+                                                        </div>
+                                                        <input type="hidden" name="send_sms_cancelled" id="send_sms_cancelled" value="{% if settings.cancelled.status %} {{ settings.cancelled.status }} {% else %} 0 {% endif %}">
+                                                    </div>
+                                                </div>
+
+                                                <label class="col-sm-12 col-md-2 control-label" for="cancelled_msg">Cancelled Massage :</label>
+                                                <div class="col-sm-12 col-md-5">
+
+                                                    <textarea name="cancelled_msg" class="form-control" rows="3" id="cancelled_msg" placeholder="Cancelled Massage " required {% if settings.cancelled.status==1 %}readonly="readonly"{% endif %} >{% if settings.cancelled.message %}{{ settings.cancelled.message }} {% endif %}</textarea>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group row">
+                                                <label class="col-sm-12 col-md-2 control-label ">Send SMS on Refunded:</label>
+                                                <div class="col-sm-12 col-md-2">
+                                                    <div class="input-group">
+                                                        <div id="radioBtn" class="btn-group">
+                                                            <a class="btn btn-primary btn-sm {% if settings.refunded.status==0 %} active  {% else %} notActive {% endif %}" id="refunded_yes" data-toggle="send_sms_refunded" data-title="0">YES</a>
+                                                            <a class="btn btn-primary btn-sm {% if settings.refunded.status==1 %} active  {% else %} notActive {% endif %}" id="refunded_no" data-toggle="send_sms_refunded" data-title="1">NO</a>
+                                                        </div>
+                                                        <input type="hidden" name="send_sms_refunded" id="send_sms_refunded" value="{% if settings.refunded.status %} {{ settings.refunded.status }} {% else %} 0 {% endif %}">
+                                                    </div>
+                                                </div>
+
+                                                <label class="col-sm-12 col-md-2 control-label" for="pending_msg">Refunded Massage :</label>
+                                                <div class="col-sm-12 col-md-5">
+
+                                                    <textarea name="refunded_msg" class="form-control" rows="3" id="refunded_msg" placeholder="Refunded Massage " required {% if settings.refunded.status==1 %}readonly="readonly"{% endif %} >{% if settings.refunded.message %}{{ settings.refunded.message }} {% endif %}</textarea>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 ">
+                                            <input type="submit" id="notify-update" class="btn btn-primary " value="Save">
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane table-responsive" id="tab-custom">
+                            <div class="col-sm-6">
+                                <div class="panel panel-default panel-floating panel-floating-inline">
+                                    <div class="panel-body">
+                                        <form method="post" action="javascript:void(0)" id="custom_sms" class="form-horizontal">
+                                          
+                                            <div class="form-group" id="show_number">
+                                                <label for="number" class="col-sm-3">Number :</label>
+                                                <div class="col-sm-9">
+                                                    <input type="number" class="form-control" name="number" id="number" placeholder="Number">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="massage" class="col-sm-3 ">Massage :</label>
+                                                <div class="col-sm-9">
+                                                    <textarea name="custom_msg" class="form-control" id="massage" rows="6"  placeholder="Write Your Massage " required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+
+                                                <div class="col-sm-4 col-md-4 ">
+
+                                                </div>
+                                                <div class="col-sm-10 ">
+                                                    <input type="submit" name="send" id="send" class="btn btn-primary" value="Send">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#radioBtn a').on('click', function(){
+        var sel = $(this).data('title');
+        var tog = $(this).data('toggle');
+        $('#'+tog).prop('value', sel);
+
+        $('a[data-toggle="'+tog+'"]').not('[data-title="'+sel+'"]').removeClass('active').addClass('notActive');
+        $('a[data-toggle="'+tog+'"][data-title="'+sel+'"]').removeClass('notActive').addClass('active');
+    });
+    //shipped_script
+    $('#shipped_yes').on('click', function () {
+        $("#shipped_msg").removeAttr("readonly", true);
+        $("#shipped_msg").attr('required', true);
+    });
+    $('#shipped_no').on('click', function () {
+        $("#shipped_msg").attr("readonly", true);
+        $("#shipped_msg").removeAttr('required', true);
+    });
+    //pending_script
+    $('#pending_yes').on('click', function () {
+        $("#pending_msg").removeAttr("readonly", true);
+        $("#pending_msg").attr('required', true);
+    });
+    $('#pending_no').on('click', function () {
+        $("#pending_msg").attr("readonly", true);
+        $("#pending_msg").removeAttr('required', true);
+    });
+    //processing_script
+    $('#processing_yes').on('click', function () {
+        $("#processing_msg").removeAttr("readonly", true);
+        $("#processing_msg").attr('required', true);
+    });
+    $('#processing_no').on('click', function () {
+        $("#processing_msg").attr("readonly", true);
+        $("#processing_msg").removeAttr('required', true);
+    });
+    //failed_script
+    $('#failed_yes').on('click', function () {
+        $("#failed_msg").removeAttr("readonly", true);
+        $("#failed_msg").attr('required', true);
+    });
+    $('#failed_no').on('click', function () {
+        $("#failed_msg").attr("readonly", true);
+        $("#failed_msg").removeAttr('required', true);
+    });
+    //complete_script
+    $('#complete_yes').on('click', function () {
+        $("#complete_msg").removeAttr("readonly", true);
+        $("#complete_msg").attr('required', true);
+    });
+    $('#complete_no').on('click', function () {
+        $("#complete_msg").attr("readonly", true);
+        $("#complete_msg").removeAttr('required', true);
+    });
+    //cancelled_script
+    $('#cancelled_yes').on('click', function () {
+        $("#cancelled_msg").removeAttr("readonly", true);
+        $("#cancelled_msg").attr('required', true);
+    });
+    $('#cancelled_no').on('click', function () {
+        $("#cancelled_msg").attr("readonly", true);
+        $("#cancelled_msg").removeAttr('required', true);
+    });
+    //refunded_script
+    $('#refunded_yes').on('click', function () {
+        $("#refunded_msg").removeAttr("readonly", true);
+        $("#refunded_msg").attr('required', true);
+    });
+    $('#refunded_no').on('click', function () {
+        $("#refunded_msg").attr("readonly", true);
+        $("#refunded_msg").removeAttr('required', true);
+    });
+    
+    
+
+    jQuery(function () {
+        jQuery('#formNotify').validate({
+            submitHandler:function () {
+                var url = "index.php?route=extension/module/apifon/apifonAjaxNotification&user_token={{ user_token }}";
+                var postDataFormNotify= jQuery("#formNotify").serialize();
+
+                jQuery.post(url,postDataFormNotify,function (response) {
+                    location.reload();
+                })
+            }
+        });
+    });
+
+    jQuery(function () {
+        jQuery('#custom_sms').validate({
+            submitHandler:function () {
+                var url = "index.php?route=extension/module/apifon/apifonAjaxCustomSMS&user_token={{ user_token }}";
+                var postDataSMS= jQuery("#custom_sms").serialize();
+
+                jQuery.post(url,postDataSMS,function (response) {
+                    console.log(response);
+                    var status= jQuery.parseJSON(response);
+                    if(status.status==1){
+                        alert(status.massage);
+                        document.forms['custom_sms'].reset();
+                    }else{
+                        alert(status.massage);
+                    }
+
+                })
+            }
+        });
+    });
+</script>
+{{ footer }}
